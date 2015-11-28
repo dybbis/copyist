@@ -1,0 +1,32 @@
+{
+  "name": "cmd",
+  "description": "",
+  "main": "main.js",
+  "authors": [
+    "Jo Dybdal"
+  ],
+  "license": "MIT",
+  "moduleType": [],
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.4.8",
+    "bootstrap-sass": "~3.3.6",
+    "angular-route": "~1.4.8",
+    "ngprogress": "~1.1.2",
+    "angular-bootstrap": "~0.14.3",
+    "angular-animate": "~1.4.8",
+    "angular-animate-css": "~0.0.4",
+    "font-awesome": "~4.5.0",
+    "angular-resource": "~1.4.8",
+    "animate.css": "~3.4.0",
+    "angular-material": "~0.11.4",
+    "angular-messages": "~1.4.8"
+  }
+}
