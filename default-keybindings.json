@@ -1,0 +1,20 @@
+{
+    "search": {
+        "down": {
+            "label": "Navigate down the result list",
+            "action": "navigateDown"
+        },
+        "up": {
+            "label": "Navigate up the result list",
+            "action": "navigateUp"
+        },
+        "right": {
+            "label": "Open information about a Gist",
+            "action": "openGist"
+        },
+        "left": {
+            "label": "Close information about a Gist",
+            "action": "closeGist"
+        }
+    }
+}

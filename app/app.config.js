@@ -11,16 +11,35 @@
         $interpolateProvider.endSymbol('%>');
     }
 
-    authenticate.$inject = ['$rootScope'];
-    function authenticate($rootScope) {
+    authenticate.$inject = ['$rootScope', '$window', 'Config', 'Keysequence'];
+    function authenticate($rootScope, $window, Config, Keysequence) {
+
+        $rootScope.activeKeybindings = 'search';
+
         $rootScope.$on("$routeChangeStart", function (event, next, current) {
-            if (!next.anonymousAccess) {
-                next.resolve = angular.extend(next.resolve || {}, {
-                    currentUser: function() {
-                        return true;
-                    }
-                });
+            next.resolve = angular.extend(next.resolve || {}, {
+                currentUser: function() {
+                    return true;
+                },
+                keybindings: function() {
+                    Config.keybindings();
+                },
+                keynames: function() {
+                    Config.keynames();
+                }
+            });
+        });
+
+        angular.element($window).on('keydown', function(e) {
+            var keysequence = Keysequence.generate(e)
+              , action = null;
+
+            if (keysequence) {
+                if (action = Keysequence.action(keysequence)) {
+                    $rootScope.$broadcast(action);
+                }
             }
+
         });
     }
 

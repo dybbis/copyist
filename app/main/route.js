@@ -2,15 +2,15 @@
     'use strict';
 
     angular
-        .module('cmd.front')
+        .module('cmd.main.router', ['cmd.main.controller', 'cmd.core', 'cmd.gist'])
         .config(config);
 
     config.$inject = ['$routeProvider'];
     function config($routeProvider) {
         $routeProvider.
             when('/', {
-                templateUrl: 'app/front/front.html',
-                controller: 'Frontpage',
+                templateUrl: 'app/main/template.html',
+                controller: 'Main',
                 controllerAs: 'vm',
                 anonymousAccess: true
             });

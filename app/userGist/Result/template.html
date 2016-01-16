@@ -1,0 +1,21 @@
+<div class="user-gist-result" ng-controller="UserGistResult as resultVm">
+    <div class="result" ng-if="!!resultVm.result.length">
+        <div class="gist" ng-class="[{true:'selected', false:''}[gist.selected==true]]" ng-repeat="gist in resultVm.result">
+            <h1>
+                <% gist.description | limitTo: 30 %><% gist.description.length > 30 ? '...' : '' %>
+           </h1>
+           <div class="options">
+                <i class="fa fa-info"></i>
+                <i class="fa fa-expand"></i>
+           </div>
+           <h3 ng-repeat="file in gist.files">
+               <% file.filename %>
+            </h3>
+
+            <div class="access">
+                <i class="fa fa-eye-slash" ng-if="!gist.public"></i>
+                <i class="fa fa-eye" ng-if="gist.public"></i>
+            </div>
+        </div>
+    </div>
+</div>

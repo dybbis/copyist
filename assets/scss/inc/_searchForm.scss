@@ -1,0 +1,79 @@
+.search-form {
+    -webkit-box-shadow: 0px 8px 37px -1px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 8px 37px -1px rgba(0,0,0,0.75);
+    box-shadow: 0px 8px 37px -1px rgba(0,0,0,0.75);
+    background: rgba(0,0,0,0.5);
+    box-sizing: border-box;
+    padding: 10px;
+    color: white;
+    width: 100%;
+    border-radius: 5px;
+
+    input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 5px 10px;
+        font-size: 25px;
+        border: 2px solid #106CC8;
+    }
+}
+
+.slider {
+    width: 100%;
+    padding: 20px 0;
+    float: left;
+
+    i {
+        outline: none;
+        opacity: 0.7;
+        color: $denim;
+    }
+
+    .nav {
+        float: left;
+        font-size: 40px;
+        width: 40%;
+
+        i {
+            cursor: pointer;
+        }
+        &.nav-left {
+            text-align: right;
+        }
+        &.nav-right {
+            text-align: left;
+        }
+    }
+
+    .slides {
+        float: left;
+        width: 20%;
+        position: relative;
+        text-align: center;
+        overflow: hidden;
+
+        i {
+            font-size: 45px;
+
+            &.ng-enter {
+                animation: slideInRight 0.3s;
+            }
+
+            &.ng-leave {
+                animation: slideOutLeft 0.3s;
+            }
+        }
+
+        &.right {
+            i {
+                &.ng-enter {
+                    animation: slideInLeft 0.3s;
+                }
+
+                &.ng-leave {
+                    animation: slideOutRight 0.3s;
+                }
+            }
+        }
+    }
+}

@@ -1,39 +1,92 @@
-var app = require('app');  // Module to control application life.
-var BrowserWindow = require('browser-window');  // Module to create native browser window.
+const fs        = require('fs');
+const app       = require('app');
+const electron  = require('electron');
+const Window    = electron.BrowserWindow;
+const Menu      = electron.Menu;
+const Tray      = electron.Tray;
 
-// Report crashes to our server.
 require('crash-reporter').start();
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
-var mainWindow = null;
+var window          = null;
+var appIcon         = null;
+var homeFolder      = process.env.USERPROFILE || process.env.HOME;
+var configFolder    = homeFolder + "/.config/cmd";
+var keybindings     = configFolder + "/keybindings.json";
 
-// Quit when all windows are closed.
+try {
+    fs.accessSync(configFolder, fs.F_OK);
+    fs.accessSync(keybindings, fs.F_OK);
+} catch (e) {
+    switch(e.path) {
+        case configFolder:
+            fs.mkdirSync(configFolder);
+        case keybindings:
+            fs.createReadStream('./default-keybindings.json').pipe(fs.createWriteStream(keybindings));
+            break;
+    }
+}
+
 app.on('window-all-closed', function() {
-  // On OS X it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform != 'darwin') {
-    app.quit();
-  }
+    if (process.platform != 'darwin') {
+        app.quit();
+    }
 });
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
 app.on('ready', function() {
-  // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 600});
 
-  // and load the index.html of the app.
-  mainWindow.loadURL('file://' + __dirname + '/index.html');
+    appIcon = new Tray( __dirname + '/assets/images/tray.png');
 
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+    var contextMenu = Menu.buildFromTemplate([
+        { label: 'Preferences', click: function() { require('electron').shell.openExternal('http://electron.atom.io') } },
+        { label: 'About', click: function() { require('electron').shell.openExternal('http://electron.atom.io') } },
+        { type: 'separator' },
+        { label: 'Exit', click: function() { process.exit(0); } }
+    ]);
 
-  // Emitted when the window is closed.
-  mainWindow.on('closed', function() {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    mainWindow = null;
-  });
+    appIcon.setToolTip('This is my application.');
+    appIcon.setContextMenu(contextMenu);
+
+    window = new Window({
+        //'skip-taskbar': true,
+        'resizable': false,
+        'frame': true,
+        'transparent': true
+    });
+
+    window.loadURL('file://' + __dirname + '/index.html');
+
+    window.webContents.openDevTools();
+
+    window.on('closed', function() {
+        window = null;
+    });
 });
+
+// Load config files in angularjs
+
+var http = require('http');
+
+//We need a function which handles requests and send response
+function handleRequest(request, response) {
+    console.log();
+    switch(request.url) {
+        case "/keybindings":
+            response.writeHead(200, {"Content-Type": "application/json"});
+            response.end(JSON.stringify(require(keybindings)));
+            break;
+        case "/keynames":
+            response.writeHead(200, {"Content-Type": "application/json"});
+            response.end(JSON.stringify(require("./keynames.json")));
+            break;
+        default:
+            response.writeHead(404, {"Content-Type": "text/plain"});
+            response.end("404 Not found");
+            break;
+    }
+}
+
+//Create a server
+var server = http.createServer(handleRequest);
+
+//Lets start our server
+server.listen(13765, function(){});

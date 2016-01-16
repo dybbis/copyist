@@ -19,8 +19,7 @@
         <script src="bower_components/ngprogress/build/ngprogress.js"></script>
         <script src="assets/js/app.js"></script>
     </head>
-    <body ng-app="cmd">
-        <ng-include src="'app/header/header.html'" ></ng-include>
+    <body ng-app="cmd" unselectable="on" onselectstart="return false;">
         <div class="main" ng-view></div>
     </body>
 </html>
