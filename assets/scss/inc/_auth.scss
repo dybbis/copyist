@@ -1,0 +1,53 @@
+.login-wrapper {
+    background: #133751;
+    padding-top: 20px;
+    padding-bottom: 20px;
+
+    .login-form {
+        background: #359ACE;
+        padding-bottom: 60px;
+        padding-top: 20px;
+
+        h1 {
+            text-align: center;
+            color: white;
+        }
+
+        .buttons {
+            text-align: center;
+
+            button {
+                width: 60%;
+            }
+        }
+
+        md-input-container {
+            label {
+                color: rgba(255, 255, 255, 0.5);
+                padding-left: 30px;
+            }
+
+            input {
+                color: white;
+                border-color: white;
+                padding-left: 30px;
+            }
+
+            i {
+                color: white;
+                position: absolute;
+                bottom: 35px;
+            }
+
+            &.md-input-focused, &.md-input-has-value {
+                label {
+                    color: rgba(255, 255, 255, 1);
+                }
+
+                input {
+                    border-color: white;
+                }
+            }
+        }
+    }
+}

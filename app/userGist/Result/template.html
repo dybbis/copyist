@@ -1,6 +1,6 @@
 <div class="user-gist-result" ng-controller="UserGistResult as resultVm">
     <div class="result" ng-if="!!resultVm.result.length">
-        <div class="gist" ng-class="[{true:'selected', false:''}[gist.selected==true]]" ng-repeat="gist in resultVm.result">
+        <div class="gist" copy-clip event="navigateDown" gist="gist" ng-class="[{true:'selected', false:''}[gist.selected==true]]" ng-repeat="gist in resultVm.result">
             <h1>
                 <% gist.description | limitTo: 30 %><% gist.description.length > 30 ? '...' : '' %>
            </h1>
@@ -18,4 +18,6 @@
             </div>
         </div>
     </div>
+</div>
+<div class="joerkul" data-clipboard-text="Jo er kul as">
 </div>

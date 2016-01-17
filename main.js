@@ -49,8 +49,10 @@ app.on('ready', function() {
     window = new Window({
         //'skip-taskbar': true,
         'resizable': false,
-        'frame': true,
-        'transparent': true
+        'frame': false,
+        'transparent': true,
+        'width': 800,
+        'height': 700
     });
 
     window.loadURL('file://' + __dirname + '/index.html');

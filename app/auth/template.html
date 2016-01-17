@@ -1,0 +1,24 @@
+<div class="row">
+    <div class="login-wrapper small-12 columns">
+        <form class="login-form small-6 small-offset-3 columns" role="form" ng-init="vm.credentials = {}">
+            <h1>CMD</h1>
+            <md-input-container>
+                <i class="fa fa-at"></i>
+                <label for="email">Email</label>
+                <input id="email" ng-model="vm.credentials.email" />
+            </md-input-container>
+            <md-input-container>
+                <i class="fa fa-key fa-fw"></i>
+                <label for="password">Password</label>
+                <input id="password" ng-model="vm.credentials.password" type="password">
+            </md-input-container>
+
+            <div class="buttons">
+                <md-button type="button" ng-click="vm.authenticate()" class="md-raised md-button md-ink-ripple">
+                    <span>Sign in</span>
+                    <div class="md-ripple-container"></div>
+                </md-button>
+            </div>
+        </form>
+    </div>
+</div>

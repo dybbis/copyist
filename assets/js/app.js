@@ -7,20 +7,34 @@
         .config(config)
         .run(authenticate);
 
-    function config($interpolateProvider, $httpProvider) {
+    function config($interpolateProvider, $httpProvider, $authProvider) {
         $interpolateProvider.startSymbol('<%');
         $interpolateProvider.endSymbol('%>');
+
+        $authProvider.configure({
+            apiUrl: 'https://api.github.com',
+            emailSignInPath: '/'
+        });
     }
 
-    authenticate.$inject = ['$rootScope', '$window', 'Config', 'Keysequence'];
-    function authenticate($rootScope, $window, Config, Keysequence) {
+    authenticate.$inject = ['$rootScope', '$window', 'Config', 'Keysequence', '$auth', '$location'];
+    function authenticate($rootScope, $window, Config, Keysequence, $auth, $location) {
 
         $rootScope.activeKeybindings = 'search';
 
         $rootScope.$on("$routeChangeStart", function (event, next, current) {
+            console.log($location.path());
             next.resolve = angular.extend(next.resolve || {}, {
                 currentUser: function() {
-                    return true;
+                    if ($rootScope.currentUser) {
+                        return $rootScope.currentUser;
+                    }
+
+                    $auth.authenticate('github').then(function(res) {
+                        console.log(res);
+                    }).catch(function(res) {
+                        $location.path('/login');
+                    });
                 },
                 keybindings: function() {
                     Config.keybindings();
@@ -53,6 +67,7 @@
     angular.module('cmd', [
         /* Components modules */
         'cmd.mode.controller',
+        'cmd.copy.directive',
 
         /* Shared modules*/
         'cmd.core',
@@ -61,12 +76,15 @@
         /* Feature modules */
         'cmd.main.router',
         'cmd.main.controller',
+        'cmd.auth.router',
+        'cmd.auth.controller',
         'cmd.user.gist.result.controller',
         'cmd.user.gist.search.controller',
 
         /* Service modules */
         'cmd.config.service',
-        'cmd.keysequence.service'
+        'cmd.keysequence.service',
+        'cmd.gist.service'
 
     ]);
 
@@ -77,16 +95,115 @@
         /* Angular modules */
         'ngRoute',
         'ngAnimate',
-        'ngProgress',
         'ngResource',
         'ngMessages',
         'ngMaterial',
+        'ng-token-auth'
 
     ]);
 
 })();
 
 },{}],3:[function(require,module,exports){
+(function() {
+    'use strict';
+
+    angular
+        .module('cmd.auth.controller', ['cmd.core'])
+        .controller('Auth', Auth);
+
+    Auth.$inject = ['$scope', '$location', '$auth'];
+    function Auth($scope, $location, $auth) {
+        var vm = this;
+
+        vm.authenticate = function () {
+            if (vm.credentials.email && vm.credentials.password) {
+                console.log(vm.credentials);
+                 $auth.submitLogin(vm.credentials).then(function(res) {
+                    console.log(res);
+                }).catch(function(res) {
+                    console.log(res);
+                });
+            }
+        }
+    };
+
+})();
+
+},{}],4:[function(require,module,exports){
+(function() {
+    'use strict';
+
+    angular
+        .module('cmd.auth.router', ['cmd.auth.controller', 'cmd.core'])
+        .config(config);
+
+    config.$inject = ['$routeProvider'];
+    function config($routeProvider) {
+        $routeProvider.
+            when('/login', {
+                templateUrl: 'app/auth/template.html',
+                controller: 'Auth',
+                controllerAs: 'vm',
+                anonymousAccess: true
+            });
+    }
+
+})();
+
+},{}],5:[function(require,module,exports){
+(function() {
+    'use strict';
+
+    Clipboard = window.Clipboard;
+
+    angular
+        .module('cmd.copy.directive', [])
+        .directive('copyClip', CopyClip)
+
+    CopyClip.$inject = ['GistService', '$timeout'];
+    function CopyClip(GistService, $timeout) {
+        return {
+            restrict: 'AE',
+            scope: {
+                event: "@",
+                gist: "="
+            },
+            link: function (scope, elem, attrs) {
+
+                var gistFiles = [];
+
+                GistService.content(scope.gist, function(res) {
+                    gistFiles = res;
+                });
+
+                scope.$on(scope.event, function() {
+                    if(elem.hasClass('selected') && gistFiles.length > 0) {
+                        var copy = angular.element('<div class="copy-element" data-clipboard-text="'+gistFiles[0].content+'"></div>');
+                        var clipboard = new Clipboard(copy[0]);
+
+                        clipboard.on('success', function(e) {
+                            copy[0].parentNode.removeChild(copy[0]);
+                            e.clearSelection();
+                        });
+
+                        clipboard.on('error', function(e) {
+                            copy[0].parentNode.removeChild(copy[0]);
+                            e.clearSelection();
+                        });
+
+                        elem.append(copy);
+                        copy[0].click();
+                        clipboard.destroy();
+                    }
+                });
+            }
+        };
+    };
+
+})();
+
+},{}],6:[function(require,module,exports){
 (function() {
     'use strict';
 
@@ -120,7 +237,7 @@
 
 })();
 
-},{}],4:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 (function() {
     'use strict';
 
@@ -135,7 +252,7 @@
 
 })();
 
-},{}],5:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 (function() {
     'use strict';
 
@@ -156,7 +273,7 @@
 
 })();
 
-},{}],6:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 (function() {
     'use strict';
 
@@ -172,7 +289,7 @@
 
 })();
 
-},{}],7:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 (function() {
     'use strict';
 
@@ -214,7 +331,44 @@
 
 })();
 
-},{}],8:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
+(function() {
+    'use strict';
+
+    angular
+        .module('cmd.gist.service', [])
+        .factory('GistService', GistService);
+
+    GistService.$inject = ['$http'];
+    function GistService($http) {
+        var gistService = {
+            content: function(gist, success, error) {
+                var files = []
+                  , numberOfFiles = Object.keys(gist.files).length
+                  , count = 0;
+
+                angular.forEach(gist.files, function(file) {
+                    $http.get(file.raw_url).success(function(res) {
+                        file.content =res;
+                        files.push(file);
+
+                        count++;
+                        if (count === numberOfFiles) {
+                            success(files);
+                        }
+                    }).error(function() {
+                        error();
+                    });
+                });
+            }
+        }
+
+        return gistService;
+    };
+
+})();
+
+},{}],12:[function(require,module,exports){
 (function() {
     'use strict';
 
@@ -247,51 +401,119 @@
 
 })();
 
-},{}],9:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 (function() {
     'use strict';
 
     angular
-        .module('cmd.user.gist.result.controller', ['cmd.core'])
+        .module('cmd.user.gist.result.controller', ['cmd.core', 'cmd.user.gist.property.service', 'cmd.copy.directive'])
         .controller('UserGistResult', UserGistResult);
 
-    UserGistResult.$inject = ['$scope'];
-    function UserGistResult($scope) {
+    UserGistResult.$inject = ['$scope', 'UserGistProperties'];
+    function UserGistResult($scope, UserGistProperties) {
         var resultVm = this;
 
-        console.log($scope.$parent.$parent.$parent.searchVm.result);
+        resultVm.result = UserGistProperties.getResult();
 
-        //vm.result[0].selected = true;
+        angular.forEach(resultVm.result, function(res) {
+            res.selected = false;
+        });
+
+        resultVm.focused = 0;
+
+        if (resultVm.result[resultVm.focused]) {
+            resultVm.result[resultVm.focused].selected = true;
+        }
+
+        $scope.$on('navigateDown', function() {
+
+            if (resultVm.focused === resultVm.result.length -1) {
+                return;
+            }
+
+            $scope.$apply(function() {
+                resultVm.result[resultVm.focused].selected = false;
+                resultVm.focused++;
+                resultVm.result[resultVm.focused].selected = true;
+            });
+        });
+
+        $scope.$on('navigateUp', function() {
+
+            if (resultVm.focused === 0) {
+                return;
+            }
+
+            $scope.$apply(function() {
+                resultVm.result[resultVm.focused].selected = false;
+                resultVm.focused--;
+                resultVm.result[resultVm.focused].selected = true;
+            });
+        });
     };
 
 })();
 
-},{}],10:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 (function() {
     'use strict';
 
     angular
-        .module('cmd.user.gist.search.controller', ['cmd.core'])
+        .module('cmd.user.gist.search.controller', ['cmd.core', 'cmd.user.gist.property.service'])
         .controller('UserGistSearch', UserGistSearch);
 
-    UserGistSearch.$inject = ['$scope', 'Gist'];
-    function UserGistSearch($scope, Gist) {
+    UserGistSearch.$inject = ['$scope', 'Gist', 'UserGistProperties'];
+    function UserGistSearch($scope, Gist, UserGistProperties) {
         var searchVm = this;
 
-        $scope.gists = Gist.list();
+        searchVm.gists = Gist.list();
+        searchVm.searching = false;
 
         $scope.$watch('searchVm.search', function(searchText) {
-            searchVm.result = [];
+            var result = [];
             if (typeof searchText !== 'undefined' && searchText.length > 0) {
-                angular.forEach($scope.gists, function(gist) {
+                searchVm.searching = true;
+
+                angular.forEach(searchVm.gists, function(gist) {
                     if (gist.description.toLowerCase().indexOf(searchText.toLowerCase()) !== -1) {
-                        searchVm.result.push(gist);
+                        result.push(gist);
                     }
                 });
+
+                UserGistProperties.setResult(result);
+
+            } else {
+                searchVm.searching = false;
             }
         });
     };
 
 })();
 
-},{}]},{},[2,1,3,4,5,6,7,8,9,10]);
+},{}],15:[function(require,module,exports){
+(function() {
+    'use strict';
+
+    angular
+        .module('cmd.user.gist.property.service', [])
+        .service('UserGistProperties', UserGistProperties);
+
+    UserGistProperties.$inject = [];
+    function UserGistProperties() {
+        var result = null;
+
+        var properties = {
+            setResult: function(res) {
+                result = res;
+            },
+            getResult: function() {
+                return result;
+            }
+        }
+
+        return properties;
+    };
+
+})();
+
+},{}]},{},[2,1,3,4,5,6,7,8,9,10,11,12,13,14,15]);

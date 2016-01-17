@@ -15,6 +15,10 @@
             padding: 10px;
             border-bottom: 1px solid #ccc;
 
+            &.selected {
+                background: #ccc;
+            }
+
             h1 {
                 font-size: 24px;
                 margin-top: 0;

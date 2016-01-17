@@ -2,5 +2,5 @@
     <form class="search-form" name="searchForm">
         <input name="search" ng-model="searchVm.search" required>
     </form>
-    <div ng-include="'app/userGist/Result/template.html'" ng-if="!!searchVm.result.length"></div>
+    <div ng-include="'app/userGist/Result/template.html'" ng-if="searchVm.searching"></div>
 </div>

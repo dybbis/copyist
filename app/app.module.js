@@ -4,6 +4,7 @@
     angular.module('cmd', [
         /* Components modules */
         'cmd.mode.controller',
+        'cmd.copy.directive',
 
         /* Shared modules*/
         'cmd.core',
@@ -12,12 +13,15 @@
         /* Feature modules */
         'cmd.main.router',
         'cmd.main.controller',
+        'cmd.auth.router',
+        'cmd.auth.controller',
         'cmd.user.gist.result.controller',
         'cmd.user.gist.search.controller',
 
         /* Service modules */
         'cmd.config.service',
-        'cmd.keysequence.service'
+        'cmd.keysequence.service',
+        'cmd.gist.service'
 
     ]);
 
@@ -28,10 +32,10 @@
         /* Angular modules */
         'ngRoute',
         'ngAnimate',
-        'ngProgress',
         'ngResource',
         'ngMessages',
         'ngMaterial',
+        'ng-token-auth'
 
     ]);
 

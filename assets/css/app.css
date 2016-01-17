@@ -3368,6 +3368,66 @@ html, body {
   background: rgba(255, 0, 0, 0);
 }
 
+/* line 1, /home/jodyb/dev/cmd/assets/scss/inc/_auth.scss */
+.login-wrapper {
+  background: #133751;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+/* line 6, /home/jodyb/dev/cmd/assets/scss/inc/_auth.scss */
+.login-wrapper .login-form {
+  background: #359ACE;
+  padding-bottom: 60px;
+  padding-top: 20px;
+}
+
+/* line 11, /home/jodyb/dev/cmd/assets/scss/inc/_auth.scss */
+.login-wrapper .login-form h1 {
+  text-align: center;
+  color: white;
+}
+
+/* line 16, /home/jodyb/dev/cmd/assets/scss/inc/_auth.scss */
+.login-wrapper .login-form .buttons {
+  text-align: center;
+}
+
+/* line 19, /home/jodyb/dev/cmd/assets/scss/inc/_auth.scss */
+.login-wrapper .login-form .buttons button {
+  width: 60%;
+}
+
+/* line 25, /home/jodyb/dev/cmd/assets/scss/inc/_auth.scss */
+.login-wrapper .login-form md-input-container label {
+  color: rgba(255, 255, 255, 0.5);
+  padding-left: 30px;
+}
+
+/* line 30, /home/jodyb/dev/cmd/assets/scss/inc/_auth.scss */
+.login-wrapper .login-form md-input-container input {
+  color: white;
+  border-color: white;
+  padding-left: 30px;
+}
+
+/* line 36, /home/jodyb/dev/cmd/assets/scss/inc/_auth.scss */
+.login-wrapper .login-form md-input-container i {
+  color: white;
+  position: absolute;
+  bottom: 35px;
+}
+
+/* line 43, /home/jodyb/dev/cmd/assets/scss/inc/_auth.scss */
+.login-wrapper .login-form md-input-container.md-input-focused label, .login-wrapper .login-form md-input-container.md-input-has-value label {
+  color: white;
+}
+
+/* line 47, /home/jodyb/dev/cmd/assets/scss/inc/_auth.scss */
+.login-wrapper .login-form md-input-container.md-input-focused input, .login-wrapper .login-form md-input-container.md-input-has-value input {
+  border-color: white;
+}
+
 /* line 1, /home/jodyb/dev/cmd/assets/scss/inc/_searchForm.scss */
 .search-form {
   -webkit-box-shadow: 0px 8px 37px -1px rgba(0, 0, 0, 0.75);
@@ -3484,12 +3544,17 @@ html, body {
 }
 
 /* line 18, /home/jodyb/dev/cmd/assets/scss/inc/_searchResult.scss */
+.user-gist-result .result .gist.selected {
+  background: #ccc;
+}
+
+/* line 22, /home/jodyb/dev/cmd/assets/scss/inc/_searchResult.scss */
 .user-gist-result .result .gist h1 {
   font-size: 24px;
   margin-top: 0;
 }
 
-/* line 23, /home/jodyb/dev/cmd/assets/scss/inc/_searchResult.scss */
+/* line 27, /home/jodyb/dev/cmd/assets/scss/inc/_searchResult.scss */
 .user-gist-result .result .gist h3 {
   color: #333;
   font-size: 18px;
@@ -3500,20 +3565,20 @@ html, body {
   border-radius: 5px;
 }
 
-/* line 33, /home/jodyb/dev/cmd/assets/scss/inc/_searchResult.scss */
+/* line 37, /home/jodyb/dev/cmd/assets/scss/inc/_searchResult.scss */
 .user-gist-result .result .gist .options {
   position: absolute;
   right: 10px;
   top: 10px;
 }
 
-/* line 38, /home/jodyb/dev/cmd/assets/scss/inc/_searchResult.scss */
+/* line 42, /home/jodyb/dev/cmd/assets/scss/inc/_searchResult.scss */
 .user-gist-result .result .gist .options i {
   margin-left: 15px;
   cursor: pointer;
 }
 
-/* line 44, /home/jodyb/dev/cmd/assets/scss/inc/_searchResult.scss */
+/* line 48, /home/jodyb/dev/cmd/assets/scss/inc/_searchResult.scss */
 .user-gist-result .result .gist .access {
   position: absolute;
   right: 10px;
