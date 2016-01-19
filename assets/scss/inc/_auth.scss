@@ -49,5 +49,16 @@
                 }
             }
         }
+
+        md-checkbox {
+            color: white;
+            .md-icon {
+                border-color: white;
+            }
+
+            &.md-checked .md-icon {
+                background: #133751;
+            }
+        }
     }
 }

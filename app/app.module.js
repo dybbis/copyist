@@ -9,6 +9,9 @@
         /* Shared modules*/
         'cmd.core',
         'cmd.gist',
+        'cmd.keybinding',
+        'cmd.keyname',
+        'cmd.account',
 
         /* Feature modules */
         'cmd.main.router',
@@ -19,6 +22,8 @@
         'cmd.user.gist.search.controller',
 
         /* Service modules */
+        'cmd.auth.service',
+        'cmd.base64.service',
         'cmd.config.service',
         'cmd.keysequence.service',
         'cmd.gist.service'
@@ -34,8 +39,7 @@
         'ngAnimate',
         'ngResource',
         'ngMessages',
-        'ngMaterial',
-        'ng-token-auth'
+        'ngMaterial'
 
     ]);
 

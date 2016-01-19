@@ -5,23 +5,27 @@
         .module('cmd.keysequence.service', [])
         .factory('Keysequence', Keysequence);
 
-    Keysequence.$inject = ['$rootScope'];
-    function Keysequence($rootScope) {
+    Keysequence.$inject = ['$rootScope', 'Keybinding', 'Keyname'];
+    function Keysequence($rootScope, Keybinding, Keyname) {
 
         var keysequence = {
-            generate: function(Event) {
+            generate: function(Event, success) {
                 if ([16,17,18,91,93, 224].indexOf(Event.keyCode) === -1) {
-                    return (Event.ctrlKey ? 'ctrl+' : '')
-                        + (Event.shiftKey ? 'shift+' : '')
-                        + (Event.altKey ? 'alt+' : '')
-                        + (Event.metaKey ? 'meta+' : '')
-                        + $rootScope.keynames[Event.keyCode];
+                    Keyname.get({id: Event.keyCode}).$promise.then(function(name) {
+                        var sequence = (Event.ctrlKey ? 'ctrl+' : '')
+                            + (Event.shiftKey ? 'shift+' : '')
+                            + (Event.altKey ? 'alt+' : '')
+                            + (Event.metaKey ? 'meta+' : '')
+                            + name.text;
+                        success(sequence);
+                    });
                 }
-                return false;
             },
             action: function(sequence) {
-                var section = $rootScope.keybindings[$rootScope.activeKeybindings];
-                return (section[sequence] && section[sequence].action) ? section[sequence].action : false;
+                return Keybinding.get({
+                    section: $rootScope.activeKeybindings,
+                    id: sequence
+                });
             }
         }
 

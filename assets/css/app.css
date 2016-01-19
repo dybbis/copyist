@@ -3428,6 +3428,21 @@ html, body {
   border-color: white;
 }
 
+/* line 53, /home/jodyb/dev/cmd/assets/scss/inc/_auth.scss */
+.login-wrapper .login-form md-checkbox {
+  color: white;
+}
+
+/* line 55, /home/jodyb/dev/cmd/assets/scss/inc/_auth.scss */
+.login-wrapper .login-form md-checkbox .md-icon {
+  border-color: white;
+}
+
+/* line 59, /home/jodyb/dev/cmd/assets/scss/inc/_auth.scss */
+.login-wrapper .login-form md-checkbox.md-checked .md-icon {
+  background: #133751;
+}
+
 /* line 1, /home/jodyb/dev/cmd/assets/scss/inc/_searchForm.scss */
 .search-form {
   -webkit-box-shadow: 0px 8px 37px -1px rgba(0, 0, 0, 0.75);

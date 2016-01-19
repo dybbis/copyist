@@ -13,8 +13,10 @@
   "author": "Jo Dybdal",
   "license": "MIT",
   "dependencies": {
+    "body-parser": "^1.14.2",
     "browserify": "^12.0.1",
     "electron-prebuilt": "^0.35.2",
+    "express": "^4.13.3",
     "grunt": "^0.4.5",
     "grunt-browser-sync": "^2.2.0",
     "grunt-browserify": "^4.0.1",

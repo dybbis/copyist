@@ -5,17 +5,26 @@
         .module('cmd.auth.controller', ['cmd.core'])
         .controller('Auth', Auth);
 
-    Auth.$inject = ['$scope', '$location', '$auth'];
-    function Auth($scope, $location, $auth) {
+    Auth.$inject = ['$scope', '$rootScope', '$location', 'Auth', 'Account'];
+    function Auth($scope, $rootScope, $location, Auth, Account) {
         var vm = this;
 
         vm.authenticate = function () {
             if (vm.credentials.email && vm.credentials.password) {
-                console.log(vm.credentials);
-                 $auth.submitLogin(vm.credentials).then(function(res) {
-                    console.log(res);
-                }).catch(function(res) {
-                    console.log(res);
+
+                Auth.login(vm.credentials.email, vm.credentials.password, function() {
+                    if (vm.credentials.save) {
+                        console.log($rootScope.currentUser);
+                        Account.save($rootScope.currentUser).$promise.then(function() {
+                            $location.path('/');
+                        }, function() {
+                            console.log("could not save account");
+                        });
+                    } else {
+                        $location.path('/');
+                    }
+                }, function() {
+                    console.log(res, "@todo: DIsplay auth failure message");
                 });
             }
         }
